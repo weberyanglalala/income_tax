@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">月薪</th>
+            <th scope="col">扶養的親屬數不包含本人</th>
+            <th scope="col">扶養扣除額</th>
+            <th scope="col">標準扣除額</th>
+            <th scope="col">薪資所得特別扣除額</th>
+            <th scope="col">綜合所得稅淨額</th>
+            <th scope="col">rate</th>
+            <th scope="col">diff</th>
+            <th scope="col">每月應繳</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">
+              <input type="number" v-model="monthlySalary" />
+            </th>
+            <td>
+              <input type="number" v-model="dependentCount" />
+            </td>
+            <td>{{ dependentCount * dependent}}</td>
+            <td>{{ standardDeduction }}</td>
+            <td>{{ salaryDeduction}}</td>
+            <td>{{ net }}</td>
+            <td>{{ rate }}</td>
+            <td>{{ diff }}</td>
+            <td>{{ total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            message: "Hello Vue!",
+            monthlySalary: 86000,
+            dependent: 92000,
+            dependentCount: 0,
+            standardDeduction: 248000,
+            salaryDeduction: 207000,
+          };
+        },
+        computed: {
+          net() {
+            return (
+              this.monthlySalary * 12 -
+              this.dependent * (this.dependentCount + 1) -
+              this.standardDeduction -
+              this.salaryDeduction
+            );
+          },
+          rate() {
+            if (this.net <= 560000) {
+              return 0.05;
+            } else if (this.net <= 1260000) {
+              return 0.12;
+            } else if (this.net <= 2520000) {
+              return 0.2;
+            } else if (this.net <= 4720000) {
+              return 0.3;
+            } else {
+              return 0.4;
+            }
+          },
+          diff() {
+            if (this.net <= 560000) {
+              return 0;
+            } else if (this.net <= 1260000) {
+              return 39200;
+            } else if (this.net <= 2520000) {
+              return 140000;
+            } else if (this.net <= 4720000) {
+              return 392000;
+            } else {
+              return 864000;
+            }
+          },
+          total() {
+            const result = Math.floor(((this.net * this.rate - this.diff) / 12) / 10) * 10
+            if (result < 2000) return 0
+            else return result
+          },
+        },
+      }).mount("#app");
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
